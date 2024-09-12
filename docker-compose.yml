@@ -1,0 +1,8 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: database
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: database-admin
