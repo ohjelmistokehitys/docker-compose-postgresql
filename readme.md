@@ -73,9 +73,11 @@ Molemmat **palvelut** perustuvat valmiiseen Docker-imageen. Palveluiden nimet (`
 
 Kokeile käynnistää [docker-compose.yml](./docker-compose.yml)-tiedostossa määritellyt palvelut `docker compose up`-komennolla. Huomaat, että kumpikaan palvelu ei käynnisty, koska niille ei ole määritetty välttämättömiä **ympäristömuuttujia**, kuten salasanoja.
 
-Tutustu PostgreSQL:n Docker-imagen dokumentaatioon osoitteessa https://hub.docker.com/_/postgres sekä pgAdmin 4:n dokumentaatioon osoitteessa https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html. Näistä lähteistä löydät vaadittavat **ympäristömuuttujat**, jotka täytyy määritellä kontteja käynnistettäessä. Määrittele siis [docker-compose.yml](./docker-compose.yml)-tiedostoon kummallekin palvelulle [`environment`-lohkot](https://docs.docker.com/reference/compose-file/services/), joihin lisäät dokumentaatioissa mainitut vaaditut ympäristömuuttujat. Löydät vinkit vaadituista ympäristömuuttujista myös `docker compose up`-komennon tuottamista virheilmoituksista. Valinnaisia ympäristömuuttujia ei tarvitse asettaa, joten yksinkertaisimmillaan muuttujia tarvitsee määritellä vain 2 kappaletta kumpaakin palvelua kohden.
+Tutustu PostgreSQL:n Docker-imagen dokumentaatioon osoitteessa https://hub.docker.com/_/postgres sekä pgAdmin 4:n dokumentaatioon osoitteessa https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html. Näistä lähteistä löydät vaadittavat **ympäristömuuttujat**, jotka täytyy määritellä kontteja käynnistettäessä. Määrittele siis [docker-compose.yml](./docker-compose.yml)-tiedostoon kummallekin palvelulle [`environment`-lohkot](https://docs.docker.com/reference/compose-file/services/), joihin lisäät dokumentaatioissa mainitut vaaditut ympäristömuuttujat. Löydät vinkit vaadituista ympäristömuuttujista myös `docker compose up`-komennon tuottamista virheilmoituksista. Valinnaisia ympäristömuuttujia ei tarvitse asettaa, joten yksinkertaisimmillaan muuttujia tarvitsee määritellä vain muutama.
 
 Kun olet asettanut vaaditut ympäristömuuttujat, suorita `docker compose up`-komento uudestaan. `database`-kontin pitäisi nyt tulostaa lokiin teksti `database system is ready to accept connections` ja `database-admin` pitäisi tulostaa `[INFO] Listening at: http://[::]:80 (1)`. Huomaa, että pgAdmin-kontin ensimmäinen käynnistys vie melko kauan aikaa.
+
+💡 *Salasanojen ja käyttäjätunnusten tallentaminen YAML-tiedostoon ja niiden lisääminen versionhallintaan on yleisesti ottaen huono idea. Korjaamme tämän ongelman tehtävän myöhemmässä osassa.*
 
 
 ## Osa 2: volumet (20 %)
@@ -102,7 +104,7 @@ Lopuksi sulje käynnistämäsi palvelut `docker compose down` -komennolla ja kä
 
 Edellisessä kohdassa käytetty **Chinook** on avoimella [MIT-lisenssillä](https://github.com/lerocha/chinook-database/blob/master/LICENSE.md) julkaistu esimerkkitietokanta, joka sisältää musiikkikaupan tietoja, kuten artisteja, albumeita, kappaleita ja asiakkaita. Se on suunniteltu tarjoamaan realistinen mutta yksinkertainen tietokantarakenne, joka on hyödyllinen SQL-kyselyiden ja tietokannan hallinnan harjoitteluun. Tässä tehtävässä Chinook-tietokantaa käytetään, koska sen sisältö on monipuolinen ja helposti ymmärrettävä.
 
-Kun olet käynnistänyt [docker-compose.yml](./docker-compose.yml)-tiedostossa määritellyt kontit, ne näkyvät Dockerin komennoilla aivan kuten ilman composea käynnistetyt kontit. Suorita siis `docker ps`-komento ja varmista, että kontit ovat käynnissä. PostgreSQL-kontin nimeksi (*container_name*) on YML-tiedostossa määritetty `database`, joten voit käynnistää itsellesi bash-komentorivin kyseisen kontin sisälle seuravalla komennolla:
+Kun olet käynnistänyt [docker-compose.yml](./docker-compose.yml)-tiedostossa määritellyt kontit, ne näkyvät Dockerin komennoilla aivan kuten ilman composea käynnistetyt kontit. Suorita siis `docker ps`-komento ja varmista, että kontit ovat käynnissä. PostgreSQL-kontin nimeksi (*container_name*) on YAML-tiedostossa määritetty `database`, joten voit käynnistää itsellesi bash-komentorivin kyseisen kontin sisälle seuravalla komennolla:
 
 ```
 docker exec -it database /bin/bash
@@ -163,7 +165,7 @@ PGADMIN_DEFAULT_EMAIL=datasaurus_rex@example.com
 PGADMIN_DEFAULT_PASSWORD=Xjyl7THN5Kiz86F7PI7mz1s6Yf436GtD
 ```
 
-**Päivitä docker-compose.yml-tiedosto** käyttämään ympäristömuuttujia `.env`-tiedostosta. Lisää siis `env_file`-lohkot molemmille palveluille, ja korvaa kovakoodatut arvot viittauksilla ympäristömuuttujiin:
+**Päivitä docker-compose.yml-tiedosto** käyttämään ympäristömuuttujia `.env`-tiedostosta. Lisää siis `env_file`-lohkot molemmille palveluille. Korvaa lisäksi kovakoodatut arvot viittauksilla ympäristömuuttujiin, tai voit myös poistaa yksittäiset muuttujat kokonaan YAML-tiedostosta:
 
 ```yaml
 services:
@@ -180,6 +182,14 @@ services:
 Löydät aiheesta lisää tietoa esimerkiksi [Docker compose:n ohjeista](https://docs.docker.com/compose/environment-variables/set-environment-variables/#use-the-env_file-attribute).
 
 💡 *Docker compose:n avulla voisit käyttää myös eri .env-tiedostoja eri palveluille. Tämän tehtävän automaattisen tarkastamisen kannalta on kuitenkin tärkeää, että käytät vain ja ainoastaan `.env`-nimistä tiedostoa.*
+
+
+> [!IMPORTANT]
+> Jos käytät tässä vaiheessa eri käyttäjätunnuksia tai salasanoja kuin aikaisemmin, joudut mahdollisesti luomaan kontit uudestaan (`docker compose down`) ja poistamaan volumen (`docker volume rm`), jotta muutokset astuvat voimaan. Tämä johtuu siitä, että ympäristömuuttujina annettavia salasanoja käytetään esimerkiksi tietokannan alustuksessa, eikä ympäristömuuttujan vaihtaminen muuta talteen asetettuja käyttäjätietoja.
+>
+> > *"the Docker specific variables will only have an effect if you start the container with a data directory that is empty; any pre-existing database will be left untouched on container startup.*"
+> >
+> > postgres. Docker Official Image. https://hub.docker.com/_/postgres
 
 
 ## Ratkaisujen lähettäminen
