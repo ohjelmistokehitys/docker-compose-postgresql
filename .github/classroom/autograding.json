@@ -1,0 +1,54 @@
+{
+    "tests": [
+        {
+            "name": "1. Environment variables",
+            "setup": "cp .github/classroom/test.env .env",
+            "run": "docker compose config | python3 .github/classroom/ex1-environment.py",
+            "input": "",
+            "output": "",
+            "comparison": "included",
+            "timeout": 1,
+            "points": 20
+        },
+        {
+            "name": "2. Volumes",
+            "setup": "",
+            "run": "docker compose config | python3 .github/classroom/ex2-volumes.py",
+            "input": "",
+            "output": "",
+            "comparison": "included",
+            "timeout": 1,
+            "points": 20
+        },
+        {
+            "name": "3. Exec psql",
+            "setup": "",
+            "run": "cat hello-world.txt | python3 .github/classroom/ex3-exec-psql.py",
+            "input": "",
+            "output": "",
+            "comparison": "included",
+            "timeout": 1,
+            "points": 20
+        },
+        {
+            "name": "4. Ports",
+            "setup": "",
+            "run": "docker compose config | python3 .github/classroom/ex4-ports.py",
+            "input": "",
+            "output": "",
+            "comparison": "included",
+            "timeout": 1,
+            "points": 20
+        },
+        {
+            "name": "6. Env files",
+            "setup": "",
+            "run": "docker compose config | python3 .github/classroom/ex6-env-files.py",
+            "input": "",
+            "output": "",
+            "comparison": "included",
+            "timeout": 1,
+            "points": 20
+        }
+    ]
+}
