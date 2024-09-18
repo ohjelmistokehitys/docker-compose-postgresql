@@ -171,25 +171,15 @@ services:
     image: postgres:latest
     container_name: database
 
-  environment:
-    POSTGRES_USER: ${POSTGRES_USER}
     ...
 
-  env_file:
-    - .env
-
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: database-admin
-
-    environment:
-      ...
-
-  env_file:
-    - ...
+    env_file: ".env"
+...
 ```
 
-Docker compose:n avulla voisit käyttää myös eri .env-tiedostoja eri palveluille. Tämän tehtävän automaattisen tarkastamisen kannalta on kuitenkin tärkeää, että käytät vain ja ainoastaan `.env`-nimistä tiedostoa.
+Löydät aiheesta lisää tietoa esimerkiksi [Docker compose:n ohjeista](https://docs.docker.com/compose/environment-variables/set-environment-variables/#use-the-env_file-attribute).
+
+💡 *Docker compose:n avulla voisit käyttää myös eri .env-tiedostoja eri palveluille. Tämän tehtävän automaattisen tarkastamisen kannalta on kuitenkin tärkeää, että käytät vain ja ainoastaan `.env`-nimistä tiedostoa.*
 
 
 ## Ratkaisujen lähettäminen
