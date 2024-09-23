@@ -147,7 +147,7 @@ Löydät ohjeita pgAdmin-työkalun käyttämiseksi hakukoneilla sekä työkalun 
 🔐 *Tuotantokäytössä tietokantojen hallinta tehdään yleensä muilla tavoilla, kuten komentorivityökaluilla tai automatisoiduilla prosesseilla, eikä graafista käyttöliittymää välttämättä käytetä. Mikäli tuotantopalvelussa olisi käytössä pgAdmin tai vastaava hallintatyökalu, pääsyä siihen kannattaisi rajoittaa erityisen huolellisesti.*
 
 
-### 🚀 Extra: pgAdmin ja settings.json
+### 🚀 Extra: pgAdmin ja servers.json
 
 Tietokantapalvelimen asetukset on mahdollista lisätä pgAdmin-työkaluun automattisesti siten, että sinun ei tarvitse syöttää niitä käsin web-käyttöliittymään. Tämä onnistuu `/pgadmin4/servers.json`-tiedoston avulla, joka voidaan lisätä konttiin volumena. Löydät lisätietoja `servers.json`-tiedoston käyttämisestä Docker compose -työkalun kanssa [tästä StackOverflow-keskustelusta](https://stackoverflow.com/a/64626964). Voit halutessasi määritellä tietokannan asetukset tiedoston avulla.
 
