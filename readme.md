@@ -144,7 +144,20 @@ Kokeile kirjautua sisään pgAdmin-työkaluun nettiselaimellasi käyttämällä 
 
 Löydät ohjeita pgAdmin-työkalun käyttämiseksi hakukoneilla sekä työkalun omasta dokumentaatiosta. Voit aloittaa esimerkiksi videosta [pgAdmin Tutorial - How to Use pgAdmin (YouTube, Database Star)](https://youtu.be/WFT5MaZN6g4?feature=shared&t=160). Tätä tehtävää tehdessäsi sinun ei kuitenkaan tarvitse käyttää pgAdmin-työkalua tietokannan käsittelemiseksi, vaan riittää, että kirjaudut sisään ja saat yhteyden muodostettua onnistuneesti.
 
-*Tuotantokäytössä tietokantojen hallinta tehdään yleensä muilla tavoilla, kuten komentorivityökaluilla tai automatisoiduilla prosesseilla, eikä graafista käyttöliittymää välttämättä käytetä. Mikäli tuotantopalvelussa olisi käytössä pgAdmin tai vastaava hallintatyökalu, pääsyä siihen kannattaisi rajoittaa erityisen huolellisesti.*
+🔐 *Tuotantokäytössä tietokantojen hallinta tehdään yleensä muilla tavoilla, kuten komentorivityökaluilla tai automatisoiduilla prosesseilla, eikä graafista käyttöliittymää välttämättä käytetä. Mikäli tuotantopalvelussa olisi käytössä pgAdmin tai vastaava hallintatyökalu, pääsyä siihen kannattaisi rajoittaa erityisen huolellisesti.*
+
+
+### 🚀 Extra: pgAdmin ja settings.json
+
+Tietokantapalvelimen asetukset on mahdollista lisätä pgAdmin-työkaluun automattisesti siten, että sinun ei tarvitse syöttää niitä käsin web-käyttöliittymään. Tämä onnistuu `/pgadmin4/servers.json`-tiedoston avulla, joka voidaan lisätä konttiin volumena. Löydät lisätietoja `servers.json`-tiedoston käyttämisestä Docker compose -työkalun kanssa [tästä StackOverflow-keskustelusta](https://stackoverflow.com/a/64626964). Voit halutessasi määritellä tietokannan asetukset tiedoston avulla.
+
+Tässä tehtävärepositoriossa on valmiina [servers.json-esimerkkitiedosto](./servers.json), jota voit halutessasi käyttää pohjana. Tiedostoon määritetty käyttäjänimi tulee päivittää, mikäli asetit edellisissä vaiheissa nimeksi muun kuin `postgres`. JSON-tiedoston formaatin kuvaus löytyy [pgAdmin-työkalun omista ohjeista](https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html#json-format).
+
+Huomaa, että `servers.json`-tiedoston muutokset eivät astu voimaan automaattisesti jo olemassa oleviin kontteihin, joten joudut luomaan kontin uudelleen (`docker compose down`) lisättyäsi volumen:
+
+> *"Note that server definitions are only loaded on first launch, i.e. when the configuration database is created, and not on subsequent launches using the same configuration database."*
+>
+> /pgadmin4/servers.json. https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html#mapped-files-and-directories
 
 
 ## Osa 6: salaisuuksien hallinta .env-tiedoston avulla (20 %)
