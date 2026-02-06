@@ -16,7 +16,7 @@ check("environment" in result,
       "You must define environment files for both of the services")
 
 check("datasaurus_rex@example.com" in result,
-      "Could not find the environment variable for the pgadmin username")
+      "Could not find the environment variable for the PGADMIN_DEFAULT_EMAIL")
 
 
 print("Success!")

@@ -10,7 +10,7 @@ Käsittelemme tässä tehtävässä [**PostgreSQL**-tietokantaa](https://hub.doc
 * [How to Use the Postgres Docker Official Image (docker.com)](https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/)
 * [`docker compose` CLI reference (docker.com)](https://docs.docker.com/reference/cli/docker/compose/)
 * [Compose file reference (docker.com)](https://docs.docker.com/reference/compose-file/)
-* [DevOps with Docker, part 2 (devopswithdocker.com)](https://devopswithdocker.com/category/part-2)
+* [DevOps with Docker, chapter 3 (mooc.fi)](https://courses.mooc.fi/org/uh-cs/courses/devops-with-docker/chapter-3)
 * [Docker Compose will BLOW your MIND!! (YouTube, NetworkChuck)](https://youtu.be/DM65_JyGxCo)
 
 
@@ -71,9 +71,13 @@ Molemmat **palvelut** perustuvat valmiiseen Docker-imageen. Palveluiden nimet (`
 
 ## Osa 1: palveluiden käynnistäminen ja ympäristömuuttujat (20 %)
 
-Kokeile käynnistää [docker-compose.yml](./docker-compose.yml)-tiedostossa määritellyt palvelut `docker compose up`-komennolla. Huomaat, että kumpikaan palvelu ei käynnisty, koska niille ei ole määritetty välttämättömiä **ympäristömuuttujia**, kuten salasanoja.
+Kokeile käynnistää [docker-compose.yml](./docker-compose.yml)-tiedostossa määritellyt palvelut `docker compose up`-komennolla. Docker "pullaa" automaattisesti tarvittavat imaget ja luo niistä kontit. Kontit käynnistyvät, mutta ne kaatuvat pian sen jälkeen, koska niille ei ole määritetty vaadittuja ympäristömuuttujia, kuten salasanoja.
 
-Tutustu PostgreSQL:n Docker-imagen dokumentaatioon osoitteessa https://hub.docker.com/_/postgres sekä pgAdmin 4:n dokumentaatioon osoitteessa https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html. Näistä lähteistä löydät vaadittavat **ympäristömuuttujat**, jotka täytyy määritellä kontteja käynnistettäessä. Määrittele siis [docker-compose.yml](./docker-compose.yml)-tiedostoon kummallekin palvelulle [`environment`-lohkot](https://docs.docker.com/reference/compose-file/services/), joihin lisäät dokumentaatioissa mainitut vaaditut ympäristömuuttujat. Löydät vinkit vaadituista ympäristömuuttujista myös `docker compose up`-komennon tuottamista virheilmoituksista. Valinnaisia ympäristömuuttujia ei tarvitse asettaa, joten yksinkertaisimmillaan muuttujia tarvitsee määritellä vain muutama.
+Tutustu konttien tulostamiin virheilmoituksiin ja PostgreSQL:n Docker-imagen dokumentaatioon osoitteessa https://hub.docker.com/_/postgres. pgAdmin 4:n dokumentaatio löytyy osoitteessa https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html. Näistä lähteistä löydät vaadittavat **ympäristömuuttujat**, jotka täytyy määritellä kontteja käynnistettäessä.
+
+Määrittele seuraavaksi [docker-compose.yml](./docker-compose.yml)-tiedostoon kummallekin palvelulle [`environment`-lohkot](https://docs.docker.com/reference/compose-file/services/), joihin lisäät dokumentaatioissa mainitut vaaditut ympäristömuuttujat. Löydät vinkit vaadituista ympäristömuuttujista myös `docker compose up`-komennon tuottamista virheilmoituksista. Valinnaisia ympäristömuuttujia ei tarvitse asettaa, joten yksinkertaisimmillaan muuttujia tarvitsee määritellä vain muutama.
+
+Määrittele salasanat ja käyttäjätunnukset turvallisiksi satunnaisiksi merkkijonoiksi, joita et käytä missään muualla. Voit käyttää esimerkiksi [F‑Secure Strong Password Generator](https://www.f-secure.com/en/password-generator) -palvelua salasanojen luomiseen.
 
 Kun olet asettanut vaaditut ympäristömuuttujat, suorita `docker compose up`-komento uudestaan. `database`-kontin pitäisi nyt tulostaa lokiin teksti `database system is ready to accept connections` ja `database-admin` pitäisi tulostaa `[INFO] Listening at: http://[::]:80 (1)`. Huomaa, että pgAdmin-kontin ensimmäinen käynnistys vie melko kauan aikaa.
 
@@ -117,7 +121,9 @@ Lopuksi sulje käynnistämäsi palvelut `docker compose down` -komennolla ja kä
 
 Edellisessä kohdassa käytetty **Chinook** on avoimella [MIT-lisenssillä](https://github.com/lerocha/chinook-database/blob/master/LICENSE.md) julkaistu esimerkkitietokanta, joka sisältää musiikkikaupan tietoja, kuten artisteja, albumeita, kappaleita ja asiakkaita. Se on suunniteltu tarjoamaan realistinen mutta yksinkertainen tietokantarakenne, joka on hyödyllinen SQL-kyselyiden ja tietokannan hallinnan harjoitteluun. Tässä tehtävässä Chinook-tietokantaa käytetään, koska sen sisältö on monipuolinen ja helposti ymmärrettävä.
 
-Kun olet käynnistänyt [docker-compose.yml](./docker-compose.yml)-tiedostossa määritellyt kontit, ne näkyvät Dockerin komennoilla aivan kuten ilman composea käynnistetyt kontit. Suorita siis `docker ps`-komento ja varmista, että kontit ovat käynnissä. PostgreSQL-kontin nimeksi (*container_name*) on YAML-tiedostossa määritetty `database`, joten voit käynnistää itsellesi bash-komentorivin kyseisen kontin sisälle seuravalla komennolla:
+Kun olet käynnistänyt [docker-compose.yml](./docker-compose.yml)-tiedostossa määritellyt kontit, ne näkyvät Dockerin komennoilla aivan kuten ilman composea käynnistetyt kontit. 
+
+Suorita siis `docker ps`-komento ja varmista, että kontit ovat käynnissä. PostgreSQL-kontin nimeksi (*container_name*) on YAML-tiedostossa määritetty `database`, joten voit käynnistää itsellesi bash-komentorivin kyseisen kontin sisälle seuravalla komennolla:
 
 ```
 docker exec -it database /bin/bash
@@ -129,16 +135,15 @@ PostgreSQL-tietokannan käyttämiseksi komentorivillä voidaan hyödyntää `psq
 Kun olet saanut bash-komentokehotteen auki, eli näet yllä olevaa esimerkkiä vastaavan kehotteen, voit käyttää `psql`-työkalua joko interaktiivisessa tilassa tai suorittamalla `-c`-komennolla yksittäisiä kyselyjä. Kokeile suorittaa seuraava kysely, jossa tietokannasta etsitään kaikki kappaleet, joiden nimessä esiintyy joko `hello` tai `world`:
 
 ```sh
-# jos käyttäjänimi löytyy $POSTGRES_USER -muuttujasta:
+# jos asetit käyttäjänimen POSTGRES_USER-ympäristömuuttujalla:
 psql -U $POSTGRES_USER -d chinook_auto_increment -c "SELECT name FROM Track WHERE name ILIKE '%hello%' OR name ILIKE '%world%'"
-```
 
-Huomaa, että yllä `-U`-parametrin avulla annetaan tietokannan käyttäjätunnus. Jos määrittelit käyttäjätunnuksen compose-tiedoston ympäristömuuttujiin, voit käyttää sitä tässä. Muussa tapauksessa käytä oletustunnusta `postgres`:
-
-```sh
-# jos et asettanut muuttujaa (oletuskäyttäjänimi `postgres`)
+# jos et asettanut POSTGRES_USER-ympäristömuuttujaa (oletuskäyttäjänimi `postgres`)
 psql -U postgres -d chinook_auto_increment -c "SELECT name FROM Track WHERE name ILIKE '%hello%' OR name ILIKE '%world%'"
 ```
+
+Yllä olevissa komennoissa määritellään tietokannan käyttäjätunnus `-U`-parametrin avulla. Jos määrittelit käyttäjätunnuksen compose-tiedoston ympäristömuuttujiin, voit käyttää sitä tässä. Muussa tapauksessa käytä oletustunnusta `postgres`. `-d`-parametri määrittelee käytettävän tietokannan, joka tässä tapauksessa on `chinook_auto_increment`. Tietokannan nimi on määritetty [sql/Chinook_PostgreSql_AutoIncrementPKs.sql](./sql/Chinook_PostgreSql_AutoIncrementPKs.sql)-tiedostossa. Lopuksi `-c`-parametri määrittelee suoritettavan SQL-kyselyn.
+
 
 **Tallenna komennon tulostama lista kappaleiden nimistä [hello-world.txt](./hello-world.txt)-tiedostoon.**
 
@@ -163,16 +168,18 @@ Voit nyt kokeilla käynnistää palvelut `docker compose up`-komennolla. Nyt sin
 >
 > What is pgAdmin 4? https://www.pgadmin.org/faq/
 
-Kokeile kirjautua sisään pgAdmin-työkaluun nettiselaimellasi käyttämällä sähköpostiosoitetta ja salasanaa, jotka määrittelit ympäristömuuttujiin. Itse pgAdmin-työkaluun kirjautuminen ei vielä muodosta yhteyttä tietokantaan, vaan yhteys pitää määritellä erikseen. Samassa Docker compose -tiedostossa määritellyt palvelut voivat oletuksena ottaa toisiinsa yhteyksiä suoraan palveluiden nimiä käyttäen, joten käytä tietokannan yhteysosoitteena nimeä `postgres`. Käyttäjätunnuksena sekä salasanana käytä itse edellisissä kohdissa määrittämiäsi tunnuksia.
+Kokeile kirjautua sisään pgAdmin-työkaluun nettiselaimellasi käyttämällä sähköpostiosoitetta ja salasanaa, jotka määrittelit pgAdmin-kontin ympäristömuuttujiin.
 
-Löydät ohjeita pgAdmin-työkalun käyttämiseksi hakukoneilla sekä työkalun omasta dokumentaatiosta. Voit aloittaa esimerkiksi videosta [pgAdmin Tutorial - How to Use pgAdmin (YouTube, Database Star)](https://youtu.be/WFT5MaZN6g4?feature=shared&t=160). Tätä tehtävää tehdessäsi sinun ei kuitenkaan tarvitse käyttää pgAdmin-työkalua tietokannan käsittelemiseksi, vaan riittää, että kirjaudut sisään ja saat yhteyden muodostettua onnistuneesti.
+Itse pgAdmin-työkaluun kirjautuminen ei vielä muodosta yhteyttä tietokantaan, vaan yhteys pitää määritellä erikseen. Pääset lisäämään tietokantapalvelimen tiedot Dashboard-näkymän "Add new server"-linkillä. Samassa Docker compose -tiedostossa määritellyt palvelut voivat oletuksena ottaa toisiinsa yhteyksiä suoraan palveluiden nimiä käyttäen, joten käytä tietokannan yhteysosoitteena (host name/address) nimeä `postgres`. Käyttäjätunnuksena sekä salasanana käytä edellisissä kohdissa Postgres-kontille määrittämiäsi tunnuksia. Jos et määritellyt käyttäjätunnusta, oletuskäyttäjänimi on `postgres`.
 
-🔐 *Tuotantokäytössä tietokantojen hallinta tehdään yleensä muilla tavoilla, kuten komentorivityökaluilla tai automatisoiduilla prosesseilla, eikä graafista käyttöliittymää välttämättä käytetä. Mikäli tuotantopalvelussa olisi käytössä pgAdmin tai vastaava hallintatyökalu, pääsyä siihen kannattaisi rajoittaa erityisen huolellisesti.*
+Löydät tarkempia ohjeita pgAdmin-työkalun käyttämiseksi hakukoneilla sekä työkalun omasta dokumentaatiosta. Voit aloittaa esimerkiksi videosta [pgAdmin Tutorial - How to Use pgAdmin (YouTube, Database Star)](https://youtu.be/WFT5MaZN6g4?feature=shared&t=160). Tätä tehtävää tehdessäsi sinun ei kuitenkaan tarvitse käyttää pgAdmin-työkalua tietokannan käsittelemiseksi, vaan riittää, että kirjaudut sisään ja saat yhteyden muodostettua onnistuneesti.
+
+🔐 *Tuotantokäytössä tietokantojen hallinta tehdään yleensä muilla tavoilla, kuten komentorivityökaluilla tai automatisoiduilla prosesseilla, eikä graafista käyttöliittymää välttämättä käytetä. Mikäli tuotantopalvelussa olisi käytössä pgAdmin tai vastaava hallintatyökalu, pääsyä siihen olisi syytä rajoittaa erityisen huolellisesti.*
 
 
 ### 🚀 Extra: pgAdmin ja servers.json
 
-Tietokantapalvelimen asetukset on mahdollista lisätä pgAdmin-työkaluun automattisesti siten, että sinun ei tarvitse syöttää niitä käsin web-käyttöliittymään. Tämä onnistuu `/pgadmin4/servers.json`-tiedoston avulla, joka voidaan lisätä konttiin volumena. Löydät lisätietoja `servers.json`-tiedoston käyttämisestä Docker compose -työkalun kanssa [tästä StackOverflow-keskustelusta](https://stackoverflow.com/a/64626964). Voit halutessasi määritellä tietokannan asetukset tiedoston avulla.
+Tietokantapalvelimen asetukset on mahdollista lisätä pgAdmin-työkaluun automattisesti siten, että sinun ei tarvitse syöttää niitä käsin web-käyttöliittymään. Tämä onnistuu `/pgadmin4/servers.json`-tiedoston avulla, joka voidaan lisätä konttiin volumena. Löydät lisätietoja `servers.json`-tiedoston käyttämisestä Docker compose -työkalun kanssa esimerkiksi [tästä StackOverflow-keskustelusta](https://stackoverflow.com/a/64626964). Voit halutessasi määritellä tietokannan asetukset tiedoston avulla.
 
 Tässä tehtävärepositoriossa on valmiina [servers.json-esimerkkitiedosto](./servers.json), jota voit halutessasi käyttää pohjana. Tiedostoon määritetty käyttäjänimi tulee päivittää, mikäli asetit edellisissä vaiheissa nimeksi muun kuin `postgres`. JSON-tiedoston formaatin kuvaus löytyy [pgAdmin-työkalun omista ohjeista](https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html#json-format).
 
@@ -185,7 +192,9 @@ Huomaa, että `servers.json`-tiedoston muutokset eivät astu voimaan automaattis
 
 ## Osa 6: salaisuuksien hallinta .env-tiedoston avulla (20 %)
 
-Salaisuuksien, kuten käyttäjätunnusten ja salasanojen, säilyttäminen suoraan Docker compose -tiedostossa ei ole turvallista, sillä tiedosto on tarkoitus tallentaa versionhallintaan ja sitä on tarkoitus jakaa eri tahojen välillä. Toisaalta eri ympäristöissä tarvitaan myös tyypillisesti eri asetuksia, joten myös siksi on hyvä, että muuttuvaa tietoa ei kovakoodata. Ympäristömuuttujat tuleekin seuraavaksi siirtää `.env`-nimiseen tiedostoon, jota ei lisätä versionhallintaan. `.env` on jo valmiiksi mainittuna tämän tehtävän [.gitignore](./.gitignore)-tiedostossa, joten sen ei pitäisi päätyä versionhallintaan vahingossa.
+Salaisuuksien, kuten käyttäjätunnusten ja salasanojen, säilyttäminen suoraan Docker compose -tiedostossa ei ole turvallista, sillä compose-tiedosto on tarkoitus tallentaa versionhallintaan ja sitä on tarkoitus jakaa eri tahojen välillä. Toisaalta eri ympäristöissä tarvitaan myös tyypillisesti eri asetuksia, joten myös siksi on hyvä, että muuttuvaa tietoa ei kovakoodata.
+
+Ympäristömuuttujat tulee seuraavaksi siirtää erilliseen `.env`-nimiseen tiedostoon, jota ei lisätä versionhallintaan. `.env` on jo valmiiksi mainittuna tämän tehtävän [.gitignore](./.gitignore)-tiedostossa, joten sen ei pitäisi päätyä versionhallintaan vahingossa.
 
 **Luo uusi .env-niminen tiedosto** tähän hakemistoon ja lisää sinne molempien palveluiden tarvitsemat salaisuudet, esimerkiksi muodossa:
 
@@ -208,10 +217,13 @@ services:
   postgres:
     image: postgres:latest
     container_name: database
-
-    ...
+    # ...
 
     env_file: ".env"
+
+    # muuttujat voivat nyt viitata tiedoston muuttujiin, tai ne voidaan poistaa kokonaan:
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 ...
 ```
 
@@ -243,10 +255,10 @@ Klikkaamalla yllä olevan linkin takaa viimeisintä "GitHub Classroom Workflow" 
 
 > "The Docker Engine is licensed under the Apache License, Version 2.0. See LICENSE for the full license text."
 >
-> "However, for commercial use of Docker Engine obtained via Docker Desktop within larger enterprises (exceeding 250 employees OR with annual revenue surpassing $10 million USD), a paid subscription
-is required."
+> "However, for commercial use of Docker Engine obtained via Docker Desktop within larger enterprises (exceeding 250 employees OR with annual revenue surpassing $10 million USD), a paid subscription is required."
 >
 > https://docs.docker.com/engine/
+
 
 ## PostgreSQL
 
