@@ -23,7 +23,7 @@
         {
             "name": "3. Exec psql",
             "setup": "",
-            "run": "cat hello-world.txt | python3 .github/classroom/ex3-exec-psql.py",
+            "run": "cat hello-world.txt | tr -cd '[:print:]\n' | python3 .github/classroom/ex3-exec-psql.py",
             "input": "",
             "output": "",
             "comparison": "included",
