@@ -12,9 +12,9 @@ permissions:
 jobs:
   build:
     name: Autograding
-    if: github.actor != 'github-classroom[bot]'
+    if: (github.event_name != 'push' || github.event.head_commit.message != 'Initial commit')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: education/autograding@v1

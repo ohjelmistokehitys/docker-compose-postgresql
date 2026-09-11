@@ -1,8 +1,24 @@
 # Docker Compose ja PostgreSQL
 
+For English version, see [readme.en.md](./readme.en.md).
+
 Tämän tehtävän tavoitteena on perehtyä Dockerin ja Docker Compose:n keskeisiin käsitteisiin ja ominaisuuksiin, kuten volumet, portit ja ympäristömuuttujat. Samalla pääsemme työskentelemään PostgreSQL:n ja pgAdminin kaltaisten "oikeiden" työkalujen kanssa.
 
 Käsittelemme tässä tehtävässä [**PostgreSQL**-tietokantaa](https://hub.docker.com/_/postgres) ja [**pgAdmin**-hallintatyökalua](https://www.pgadmin.org/), mutta samoja periaatteita voidaan soveltaa myös muiden tietokantojen yhteydessä. Tehtävä onkin melko samankaltainen kuin [PostgreSQL:n Docker-imagen dokumentaatiossa esitetty Docker compose -esimerkki](https://hub.docker.com/_/postgres) sekä Dockerin blogitekstissä esitetty [How to Use the Postgres Docker Official Image](https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/) -esimerkki. Selkeimpänä erona tässä tehtävässä käytetään tietokannan hallintaan pgAdmin-työkalua, kun edellä mainituissa työkaluna on [Adminer](https://hub.docker.com/_/adminer/).
+
+
+## Ennen kuin aloitat
+
+Ennen tämän harjoituksen aloittamista sinun tulee joko asentaa Docker järjestelmääsi tai käyttää pilvipalvelua, joka tarjoaa Dockerin ajonaikaisen ympäristön. [GitHub Codespacen oletusympäristö](https://github.com/features/codespaces) sisältää Dockerin valmiiksi asennettuna, mikä on kätevä vaihtoehto.
+
+Varmista, että pystyt suorittamaan `docker compose` -komennot terminaalissa. Voit tarkistaa tämän suorittamalla seuraavan komennon:
+
+```bash
+docker compose --help
+```
+
+> [!NOTE]
+> Suosittelemme tämän harjoituksen suorittamista [GitHub Codespacessa](https://github.com/features/codespaces) tai [paikallisessa kehityskontissa](https://code.visualstudio.com/docs/devcontainers/containers). Paikalliset kehityskontit voivat vaatia lisäasetuksia ja määrittelyjä, koska ne toimivat käytännössä Docker-komentojen sisällä Docker-kontissa. GitHub Codespace tarjoaa valmiiksi konfiguroidun ympäristön, jossa Docker on asennettuna valmiiksi, mikä voi säästää aikaa ja vaivaa.
 
 
 ## Suositeltua taustamateriaalia
@@ -34,7 +50,7 @@ PostgreSQL löytyy valmiina Docker-imagena Docker Hub -konttirekisteristä: http
 
 # Tehtävä: tietokantapalvelimen sekä hallintakäyttöliittymän asennus
 
-Kehittäessäsi sovellusta tarvitset usein erillisen tietokannan, joka sisältää testidataa, joten voit huoletta muuttaa sitä ilman vaikutuksia muihin käyttäjiin tai kehittäjiin. Tässä tehtävässä luot Docker Compose -tiedoston avulla ympäristön, jossa PostgreSQL toimii kontissa, tietokanta alustetaan haluttuun alkutilaan, data pysyy säilytettynä kontin elinkaaresta riippumatta ja pääset hallitsemaan tietokantaa pgAdmin-nimisen työkalun avulla.
+Kehittäessäsi sovellusta tarvitset usein erillisen tietokannan, joka sisältää testidataa, joten voit huoletta muuttaa sitä ilman vaikutuksia muihin käyttäjiin tai kehittäjiin. Tässä tehtävässä luot Docker Compose -tiedoston avulla ympäristön, jossa PostgreSQL toimii kontissa. Tietokanta alustetaan haluttuun alkutilaan, data pysyy säilytettynä kontin elinkaaresta riippumatta ja pääset hallitsemaan tietokantaa pgAdmin-nimisen työkalun avulla.
 
 > *"While it’s possible to use the Postgres Official Image in production, Docker Postgres containers are best suited for local development. This lets you use tools like Docker Compose to collectively manage your services. You aren’t forced to juggle multiple database containers at scale, which can be challenging."*
 >
@@ -43,11 +59,11 @@ Kehittäessäsi sovellusta tarvitset usein erillisen tietokannan, joka sisältä
 Tämän tehtävän Docker Compose -asetelma soveltuu hyvin **kehitysympäristöihin**, joissa tarvitset nopeasti käyttöön otettavan tietokannan. Tietokantojen kontittamisesta tuotantoympäristöissä on olemassa eriäviä näkemyksiä. Jotkut kannattavat konttien käyttöä tietokannoille tuotannossa, koska kontit ovat helposti siirrettäviä ja skaalautuvia. Toiset taas vastustavat ajatusta, sillä tietokannat saattavat vaatia monimutkaisempaa hallintaa ja suorituskykyä, mikä voi olla haaste konttipohjaisessa ympäristössä.
 
 
-## docker-compose.yml
+## compose.yaml
 
-Tästä tehtävärepositoriosta löytyy valmiiksi [docker-compose.yml](./docker-compose.yml)-tiedosto, johon kirjoitetaan kaikki tämän tehtävän Docker-määritykset. Kokeile ratkaisujesi toimivuutta aina ensin `docker compose up` -komennolla ja sulje palvelut `docker compose down`-komennolla ennen seuraavaa kokeilua. Löydät muut mahdolliset komennot [`docker compose`-komennon dokumentaatiosta](https://docs.docker.com/reference/cli/docker/compose/).
+Tästä tehtävärepositoriosta löytyy valmiiksi [compose.yaml](./compose.yaml)-tiedosto, johon kirjoitetaan kaikki tämän tehtävän Docker-määritykset. Kokeile ratkaisujesi toimivuutta aina ensin `docker compose up` -komennolla ja sulje palvelut `docker compose down`-komennolla ennen seuraavaa kokeilua. Löydät muut mahdolliset komennot [`docker compose`-komennon dokumentaatiosta](https://docs.docker.com/reference/cli/docker/compose/).
 
-[docker-compose.yml](./docker-compose.yml)-tiedostosta löytyy valmiiksi kaksi palvelua: `postgres` ja `pgadmin`:
+[compose.yaml](./compose.yaml)-tiedostosta löytyy valmiiksi kaksi palvelua: `postgres` ja `pgadmin`:
 
 ```yaml
 services:
@@ -71,28 +87,33 @@ Molemmat **palvelut** perustuvat valmiiseen Docker-imageen. Palveluiden nimet (`
 
 ## Osa 1: palveluiden käynnistäminen ja ympäristömuuttujat (20 %)
 
-Kokeile käynnistää [docker-compose.yml](./docker-compose.yml)-tiedostossa määritellyt palvelut `docker compose up`-komennolla. Docker "pullaa" automaattisesti tarvittavat imaget ja luo niistä kontit. Kontit käynnistyvät, mutta ne kaatuvat pian sen jälkeen, koska niille ei ole määritetty vaadittuja ympäristömuuttujia, kuten salasanoja.
+Kokeile käynnistää [compose.yaml](./compose.yaml)-tiedostossa määritellyt palvelut `docker compose up`-komennolla. Docker "pullaa" automaattisesti tarvittavat imaget ja luo niistä kontit. Kontit käynnistyvät, mutta ne kaatuvat pian sen jälkeen, koska niille ei ole määritetty vaadittuja ympäristömuuttujia, kuten salasanoja.
 
 Tutustu konttien tulostamiin virheilmoituksiin ja PostgreSQL:n Docker-imagen dokumentaatioon osoitteessa https://hub.docker.com/_/postgres. pgAdmin 4:n dokumentaatio löytyy osoitteessa https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html. Näistä lähteistä löydät vaadittavat **ympäristömuuttujat**, jotka täytyy määritellä kontteja käynnistettäessä.
 
-Määrittele seuraavaksi [docker-compose.yml](./docker-compose.yml)-tiedostoon kummallekin palvelulle [`environment`-lohkot](https://docs.docker.com/reference/compose-file/services/), joihin lisäät dokumentaatioissa mainitut vaaditut ympäristömuuttujat. Löydät vinkit vaadituista ympäristömuuttujista myös `docker compose up`-komennon tuottamista virheilmoituksista. Valinnaisia ympäristömuuttujia ei tarvitse asettaa, joten yksinkertaisimmillaan muuttujia tarvitsee määritellä vain muutama.
+Määrittele seuraavaksi [compose.yaml](./compose.yaml)-tiedostoon kummallekin palvelulle [`environment`-lohkot](https://docs.docker.com/reference/compose-file/services/), joihin lisäät dokumentaatioissa mainitut vaaditut ympäristömuuttujat. Löydät vinkit vaadituista ympäristömuuttujista myös `docker compose up`-komennon tuottamista virheilmoituksista. Valinnaisia ympäristömuuttujia ei tarvitse asettaa, joten yksinkertaisimmillaan muuttujia tarvitsee määritellä vain muutama.
 
 Määrittele salasanat ja käyttäjätunnukset turvallisiksi satunnaisiksi merkkijonoiksi, joita et käytä missään muualla. Voit käyttää esimerkiksi [F‑Secure Strong Password Generator](https://www.f-secure.com/en/password-generator) -palvelua salasanojen luomiseen.
 
 Kun olet asettanut vaaditut ympäristömuuttujat, suorita `docker compose up`-komento uudestaan. `database`-kontin pitäisi nyt tulostaa lokiin teksti `database system is ready to accept connections` ja `database-admin` pitäisi tulostaa `[INFO] Listening at: http://[::]:80 (1)`. Huomaa, että pgAdmin-kontin ensimmäinen käynnistys vie melko kauan aikaa.
 
-💡 *Salasanojen ja käyttäjätunnusten tallentaminen YAML-tiedostoon ja niiden lisääminen versionhallintaan on yleisesti ottaen huono idea. Korjaamme tämän ongelman tehtävän myöhemmässä osassa.*
+pgAdmin-kontti saattaa tulostaa varoituksia, jotka liittyvät Python-syntaksiin. Nämä varoitukset voidaan jättää huomiotta, jos kontti toimii muuten normaalisti.
+
+> [!IMPORTANT]
+> Salasanojen ja käyttäjätunnusten tallentaminen YAML-tiedostoon ja niiden lisääminen versionhallintaan on yleisesti ottaen huono idea. Korjaamme tämän ongelman tehtävän myöhemmässä osassa.
 
 
 ## Osa 2: volumet (20 %)
 
-### `/var/lib/postgresql/data`
+Dockerin "volumeja" voidaan käyttää tietojen tallentamiseen konttien ulkopuolelle ja tietojen jakamiseen isäntäkoneelta kontteihin. Tässä tehtävässä käytämme niitä kahteen tarkoitukseen: PostgreSQL-tietokannan datan säilyttämiseen sekä tietokannan automaattiseen alustamiseen paikallisten SQL-skriptien avulla.
+
+### 2.1 `/var/lib/postgresql`
 
 Haluamme seuraavaksi, että postgreSQL-tietokannan data säilyy tallessa konttien pysäyttämisestä tai poistamisesta riippumatta. Tämä onnistuu käyttämällä Dockerin **volumea**, joka säilyttää tiedot host-järjestelmässä.
 
-Määrittele siis tietokantapalvelulle `volume`, jossa kontin sisään polkuun `/var/lib/postgresql/data` liitetään kontin ulkopuolinen volume. Näin tietokannan tiedot säilyvät myös mahdollisen kontin poistamisen jälkeen. Löydät lisää ohjeita tähän esimerkiksi artikkelista [How to Use the Postgres Docker Official Image](https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/).
+Määrittele siis tietokantapalvelulle `volume`, jossa kontin sisään polkuun `/var/lib/postgresql` liitetään kontin ulkopuolinen volume. Näin tietokannan tiedot säilyvät myös mahdollisen kontin poistamisen jälkeen. Löydät lisää ohjeita tähän esimerkiksi artikkelista [How to Use the Postgres Docker Official Image](https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/).
 
-### `/docker-entrypoint-initdb.d/`
+### 2.2 `/docker-entrypoint-initdb.d/`
 
 PostgreSQL mahdollistaa tietokannan alustamisen automaattisesti, kun se käynnistetään ensimmäistä kertaa. Tästä ominaisuudesta käytetään dokumentaatiossa termiä **initialization script**. Käytännössä kontti käy ensimmäistä kertaa käynnistyessään läpi tietyssä hakemistossa olevat sql-, ja sh-skriptit, joiden avulla saamme alustettua tietokannan sisällön haluttuun alkutilaan:
 
@@ -100,14 +121,16 @@ PostgreSQL mahdollistaa tietokannan alustamisen automaattisesti, kun se käynnis
 >
 > Initialization scripts. https://hub.docker.com/_/postgres
 
-Tässä tehtävässä haluamme lisätä tietokantapalvelimelle automaattisesti **Chinook-esimerkkitietokannan**, jonka luontiskripti löytyy valmiiksi tämän repositorion [`sql`-hakemistosta](./sql/). Liitä siis host-koneen `./sql`-hakemisto tietokantapalvelun sisään hakemistoksi `/docker-entrypoint-initdb.d/`, jolloin tietokanta alustetaan automaattisesti.
+Tässä tehtävässä haluamme lisätä tietokantapalvelimelle automaattisesti **Chinook-esimerkkitietokannan**, jonka luontiskripti löytyy valmiiksi tämän repositorion [`sql`-hakemistosta](./sql/).
 
-### Uudelleenkäynnistys
+Liitä siis tämän repositorion `./sql`-hakemisto tietokantapalvelun sisään hakemistoksi `/docker-entrypoint-initdb.d/`, jolloin tietokanta alustetaan automaattisesti.
+
+### 2.3 Uudelleenkäynnistys
 
 Lopuksi sulje käynnistämäsi palvelut `docker compose down` -komennolla ja käynnistä ne uudelleen `docker compose up` -komennolla. Tällä kertaa terminaaliin pitäisi ilmestyä lukuisia lokirivejä `postgres`-palvelusta, jossa kerrotaan, että tietokantaan luodaan tauluja ja rivejä (*CREATE TABLE* ja *INSERT*).
 
 > [!TIP]
-> Lisää molemmat volumet kerralla YAML-tiedostoon ja käynnistä palvelut vasta sitten. Jos määrittelet ensin `/var/lib/postgresql/data`-volumen ja käynnistät tietokannan, tietokanta alustetaan tyhjäksi, eikä myöhemmillä käynnistyskerroilla alustusskripteillä ole enää vaikutusta.
+> Lisää molemmat volumet kerralla YAML-tiedostoon ja käynnistä palvelut vasta sitten. Jos määrittelet ensin `/var/lib/postgresql`-volumen ja käynnistät tietokannan, tietokanta alustetaan tyhjäksi, eikä myöhemmillä käynnistyskerroilla alustusskripteillä ole enää vaikutusta.
 >
 > Jos näin pääsi kuitenkin jo käymään, ja tietokanta on alustettu tyhjänä, voit poistaa volumet ja käynnistää palvelut vielä kerran uudelleen:
 >
@@ -121,7 +144,7 @@ Lopuksi sulje käynnistämäsi palvelut `docker compose down` -komennolla ja kä
 
 Edellisessä kohdassa käytetty **Chinook** on avoimella [MIT-lisenssillä](https://github.com/lerocha/chinook-database/blob/master/LICENSE.md) julkaistu esimerkkitietokanta, joka sisältää musiikkikaupan tietoja, kuten artisteja, albumeita, kappaleita ja asiakkaita. Se on suunniteltu tarjoamaan realistinen mutta yksinkertainen tietokantarakenne, joka on hyödyllinen SQL-kyselyiden ja tietokannan hallinnan harjoitteluun. Tässä tehtävässä Chinook-tietokantaa käytetään, koska sen sisältö on monipuolinen ja helposti ymmärrettävä.
 
-Kun olet käynnistänyt [docker-compose.yml](./docker-compose.yml)-tiedostossa määritellyt kontit, ne näkyvät Dockerin komennoilla aivan kuten ilman composea käynnistetyt kontit. 
+Kun olet käynnistänyt [compose.yaml](./compose.yaml)-tiedostossa määritellyt kontit, ne näkyvät Dockerin komennoilla aivan kuten ilman composea käynnistetyt kontit.
 
 Suorita siis `docker ps`-komento ja varmista, että kontit ovat käynnissä. PostgreSQL-kontin nimeksi (*container_name*) on YAML-tiedostossa määritetty `database`, joten voit käynnistää itsellesi bash-komentorivin kyseisen kontin sisälle seuravalla komennolla:
 
@@ -130,9 +153,13 @@ docker exec -it database /bin/bash
 root@a1b2c3d4:/#
 ```
 
-PostgreSQL-tietokannan käyttämiseksi komentorivillä voidaan hyödyntää `psql`-työkalua. `psql` mahdollistaa mm. kyselyiden suorittamisen ja muiden tietokantaoperaatioiden tekemisen komentoriviltä, mikä on usein hyödyllistä erityisesti kehitysvaiheessa. `psql` tulee valmiiksi asennettuna PostgreSQL:n virallisessa Docker-imagessa.
+PostgreSQL-tietokannan käyttämiseksi komentorivillä voidaan hyödyntää `psql`-työkalua. `psql` mahdollistaa mm. kyselyiden suorittamisen ja muiden tietokantaoperaatioiden tekemisen komentoriviltä, mikä on usein hyödyllistä erityisesti kehitysvaiheessa. `psql` tulee valmiiksi asennettuna PostgreSQL:n virallisessa Docker-imagessa:
 
-Kun olet saanut bash-komentokehotteen auki, eli näet yllä olevaa esimerkkiä vastaavan kehotteen, voit käyttää `psql`-työkalua joko interaktiivisessa tilassa tai suorittamalla `-c`-komennolla yksittäisiä kyselyjä. Kokeile suorittaa seuraava kysely, jossa tietokannasta etsitään kaikki kappaleet, joiden nimessä esiintyy joko `hello` tai `world`:
+```
+psql --help
+```
+
+Kun olet saanut bash-komentokehotteen auki kontissa, eli näet yllä olevaa esimerkkiä vastaavan kehotteen, voit käyttää `psql`-työkalua joko interaktiivisessa tilassa tai suorittamalla `-c`-komennolla yksittäisiä kyselyjä. Kokeile suorittaa seuraava kysely, jossa tietokannasta etsitään kaikki kappaleet, joiden nimessä esiintyy joko `hello` tai `world`:
 
 ```sh
 # jos asetit käyttäjänimen POSTGRES_USER-ympäristömuuttujalla:
@@ -142,17 +169,22 @@ psql -U $POSTGRES_USER -d chinook_auto_increment -c "SELECT name FROM Track WHER
 psql -U postgres -d chinook_auto_increment -c "SELECT name FROM Track WHERE name ILIKE '%hello%' OR name ILIKE '%world%'"
 ```
 
-Yllä olevissa komennoissa määritellään tietokannan käyttäjätunnus `-U`-parametrin avulla. Jos määrittelit käyttäjätunnuksen compose-tiedoston ympäristömuuttujiin, voit käyttää sitä tässä. Muussa tapauksessa käytä oletustunnusta `postgres`. `-d`-parametri määrittelee käytettävän tietokannan, joka tässä tapauksessa on `chinook_auto_increment`. Tietokannan nimi on määritetty [sql/Chinook_PostgreSql_AutoIncrementPKs.sql](./sql/Chinook_PostgreSql_AutoIncrementPKs.sql)-tiedostossa. Lopuksi `-c`-parametri määrittelee suoritettavan SQL-kyselyn.
+Yllä olevissa komennoissa määritellään tietokannan käyttäjätunnus `-U`-parametrin avulla. Jos määrittelit käyttäjätunnuksen compose-tiedoston ympäristömuuttujiin, voit käyttää sitä tässä. Muussa tapauksessa käytä oletustunnusta `postgres`.
+
+`-d`-parametri määrittelee käytettävän tietokannan, joka tässä tapauksessa on `chinook_auto_increment`. Tietokannan nimi on määritetty [sql/Chinook_PostgreSql_AutoIncrementPKs.sql](./sql/Chinook_PostgreSql_AutoIncrementPKs.sql)-tiedostossa.
+
+`-c`-parametri määrittelee suoritettavan SQL-kyselyn, joka tässä tapauksessa hakee kaikki kappaleiden nimet, joissa esiintyy joko `hello` tai `world`. Kyselyssä käytetään `ILIKE`-operaattoria, joka on PostgreSQL:n tapa tehdä kirjainkoon huomioimaton haku.
 
 
 **Tallenna komennon tulostama lista kappaleiden nimistä [hello-world.txt](./hello-world.txt)-tiedostoon.**
 
-💡 *Voit tallentaa tulosteen joko kopioimalla tekstin leikepöydälle ja liittämällä sen tiedostoon. Vaihtoehtoisesti voit myös ohjata tulosteen suoraan tiedostoon käyttämällä `>`-operaattoria. Jos ohjaat tulosteen tiedostoon, voit kopioida tiedoston "ulos" kontista [`docker cp`-komennolla](https://docs.docker.com/reference/cli/docker/container/cp/). `hello-world.txt`-tiedosto voitaisiin liittää konttiin myös volumen avulla, mutta tämä ei ole pakollista.*
+> [!TIP]
+> Voit tallentaa tulosteen joko kopioimalla tekstin leikepöydälle ja liittämällä sen tiedostoon. Vaihtoehtoisesti voit myös ohjata tulosteen suoraan tiedostoon käyttämällä `>`-operaattoria. Jos ohjaat tulosteen tiedostoon, voit kopioida tiedoston "ulos" kontista [`docker cp`-komennolla](https://docs.docker.com/reference/cli/docker/container/cp/). `hello-world.txt`-tiedosto voitaisiin liittää konttiin myös volumen avulla, mutta tämä ei ole pakollista.
 
 
 ## Osa 4: porttien avaaminen (20 %)
 
-PostgreSQL-kontti kuuntelee oletuksena porttia **5432** ja pgadmin4-kontti porttia **80**. Julkaise nämä portit konteista host-koneelle asettamalla [docker-compose.yml](./docker-compose.yml)-tiedostoon `ports`-määritykset molemmille palveluille.
+PostgreSQL-kontti kuuntelee oletuksena porttia **5432** ja pgadmin4-kontti porttia **80**. Julkaise nämä portit konteista host-koneelle asettamalla [compose.yaml](./compose.yaml)-tiedostoon `ports`-määritykset molemmille palveluille.
 
 > [!TIP]
 > Voit käyttää host-koneella mitä vain portteja: niiden ei tarvitse olla samat kuin konttien sisäiset portit. Voit myös määritellä portit kuuntelemaan vain `127.0.0.1`-verkkoa, jolloin näiden konttien ei *pitäisi* näkyä koneesi ulkopuolelle.
@@ -192,7 +224,7 @@ Huomaa, että `servers.json`-tiedoston muutokset eivät astu voimaan automaattis
 
 ## Osa 6: salaisuuksien hallinta .env-tiedoston avulla (20 %)
 
-Salaisuuksien, kuten käyttäjätunnusten ja salasanojen, säilyttäminen suoraan Docker compose -tiedostossa ei ole turvallista, sillä compose-tiedosto on tarkoitus tallentaa versionhallintaan ja sitä on tarkoitus jakaa eri tahojen välillä. Toisaalta eri ympäristöissä tarvitaan myös tyypillisesti eri asetuksia, joten myös siksi on hyvä, että muuttuvaa tietoa ei kovakoodata.
+Salaisuuksien, kuten käyttäjätunnusten ja salasanojen, säilyttäminen suoraan Docker compose -tiedostossa ei ole turvallista, sillä compose-tiedosto on tarkoitus tallentaa versionhallintaan ja sitä on tarkoitus jakaa eri tahojen välillä. Toisaalta eri ympäristöissä, kuten kehitys, testaus, staging ja tuotanto, tarvitaan myös eri asetuksia, mikä ei onnistu arvoja kovakoodaamalla.
 
 Ympäristömuuttujat tulee seuraavaksi siirtää erilliseen `.env`-nimiseen tiedostoon, jota ei lisätä versionhallintaan. `.env` on jo valmiiksi mainittuna tämän tehtävän [.gitignore](./.gitignore)-tiedostossa, joten sen ei pitäisi päätyä versionhallintaan vahingossa.
 
@@ -210,7 +242,7 @@ PGADMIN_DEFAULT_EMAIL=datasaurus_rex@example.com
 PGADMIN_DEFAULT_PASSWORD=Xjyl7THN5Kiz86F7PI7mz1s6Yf436GtD
 ```
 
-**Päivitä docker-compose.yml-tiedosto** käyttämään ympäristömuuttujia `.env`-tiedostosta. Lisää siis `env_file`-lohkot molemmille palveluille. Korvaa lisäksi kovakoodatut arvot viittauksilla ympäristömuuttujiin, tai voit myös poistaa yksittäiset muuttujat kokonaan YAML-tiedostosta:
+**Päivitä compose.yaml-tiedosto** käyttämään ympäristömuuttujia `.env`-tiedostosta. Lisää siis `env_file`-lohkot molemmille palveluille. Korvaa lisäksi kovakoodatut arvot viittauksilla ympäristömuuttujiin, tai voit myös poistaa yksittäiset muuttujat kokonaan YAML-tiedostosta:
 
 ```yaml
 services:
@@ -221,7 +253,7 @@ services:
 
     env_file: ".env"
 
-    # muuttujat voivat nyt viitata tiedoston muuttujiin, tai ne voidaan poistaa kokonaan:
+    # muuttujat voivat nyt viitata tiedoston muuttujiin (tai ne voidaan poistaa kokonaan)
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 ...
@@ -233,20 +265,22 @@ Löydät aiheesta lisää tietoa esimerkiksi [Docker compose:n ohjeista](https:/
 
 
 > [!IMPORTANT]
-> Jos käytät tässä vaiheessa eri käyttäjätunnuksia tai salasanoja kuin aikaisemmin, joudut mahdollisesti luomaan kontit uudestaan (`docker compose down`) ja poistamaan volumen (`docker volume rm`), jotta muutokset astuvat voimaan. Tämä johtuu siitä, että ympäristömuuttujina annettavia salasanoja käytetään esimerkiksi tietokannan alustuksessa, eikä ympäristömuuttujan vaihtaminen muuta talteen asetettuja käyttäjätietoja.
+> Jos käytät tässä vaiheessa eri käyttäjätunnuksia tai salasanoja kuin aikaisemmin, joudut mahdollisesti luomaan kontit uudestaan (`docker compose down`) ja poistamaan volumen (`docker volume rm`). Tämä johtuu siitä, edelliset salasanat ja käyttäjätunnukset on jo tallennettu tietokantaan, eikä ympäristömuuttujien muuttaminen päivitä tietokannan sisältöä.
 >
 > > *"the Docker specific variables will only have an effect if you start the container with a data directory that is empty; any pre-existing database will be left untouched on container startup.*"
 > >
 > > postgres. Docker Official Image. https://hub.docker.com/_/postgres
+>
+> Vaihtoehtoisesti voisit päivittää tietokannan käyttäjätunnukset ja salasanat suoraan tietokantaan SQL-komennoilla, mutta se ei ole tässä tehtävässä tarpeen. Riittää, että luot kontit uudelleen ja poistat volumet, jolloin tietokanta alustetaan uudestaan.
 
 
 ## Ratkaisujen lähettäminen
 
 Kun olet saanut osan tai kaikki tehtävistä ratkaistua ja commitoinut vastauksesi, lähetä ratkaisut arvioitavaksi `git push`-komennolla. Git push käynnistää automaattisesti workflow:n, joka testaa kaikki komentosi ja antaa niistä joko hyväksytyn tai hylätyn tuloksen.
 
-Kun GitHub Actions on saanut ratkaisusi tarkastettua, näet tuloksen GitHub-repositoriosi [Actions-välilehdellä](../../actions/workflows/classroom.yml). Arvioinnin valmistumiseen kuluu tyypillisesti pari minuuttia.
+Kun GitHub Actions on saanut ratkaisusi tarkastettua, näet tuloksen GitHub-repositoriosi actions-välilehdellä. Arvioinnin valmistumiseen kuluu tyypillisesti pari minuuttia.
 
-Klikkaamalla yllä olevan linkin takaa viimeisintä "GitHub Classroom Workflow" -suoritusta, saat tarkemmat tiedot tehtävän arvioinnista. Sivun alaosassa näkyy saamasi pisteet. Klikkaamalla "Autograding"-otsikkoa pääset katsomaan tarkemmin arvioinnissa suoritetut vaiheet ja niiden tulokset.
+Klikkaamalla yllä olevan linkin takaa viimeisintä autograding-suoritusta, saat tarkemmat tiedot tehtävän arvioinnista. Raportin alaosassa näkyy saamasi pisteet.
 
 
 # Lisenssit
