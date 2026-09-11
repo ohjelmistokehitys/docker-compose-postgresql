@@ -183,7 +183,7 @@ Database server settings can be added to pgAdmin automatically so that you do no
 
 This assignment repository includes a ready-made [servers.json example file](./servers.json) that you can use as a starting point. The username defined in the file must be updated if you set a name other than `postgres` in earlier steps. A description of the JSON format is available in [pgAdmin’s own documentation](https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html#json-format).
 
-Note that changes to `servers.json` do not take effect automatically in already existing containers, so after adding the volume you need to recreate the container (`docker compose down`):
+Note that changes to `servers.json` do not take effect automatically in already existing containers, so after adding the volume you need to recreate pgAdmin with a fresh configuration state (for example `docker compose down` and, if pgAdmin data is persisted, remove the related pgAdmin volume/configuration database as well):
 
 > *"Note that server definitions are only loaded on first launch, i.e. when the configuration database is created, and not on subsequent launches using the same configuration database."*
 >
