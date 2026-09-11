@@ -1,1 +1,33 @@
-During the exercise, replace the contents of this file with the psql output.
+                           name
+-----------------------------------------------------------
+ Phoney Smile Fake Hellos
+ World Of Trouble
+ Hello Mary Lou
+ Woman Of The World (Ao Vivo)
+ Edge Of The World
+ My World
+ Different World
+ Brave New World
+ 07 - Strange World
+ Brave New World
+ Blood On The World's Hands
+ When Two Worlds Collide
+ It's A Man's Man's Man's World
+ A World Without Heroes
+ You're What's Happening (In The World Today)
+ My World
+ When The World Was Young
+ World Wide Suicide
+ World Leader Pretend
+ Half A World Away
+ It's The End Of The World As We Know It (And I Feel Fine)
+ Around The World
+ Blow Up The Outside World
+ Spirit's in the Material World
+ Until The End Of The World
+ Tryin' To Throw Your Arms Around The World
+ When I Look At The World
+ Neworld
+ Say Hello 2 Heaven
+ Four Walled World
+(30 rows)
